@@ -98,9 +98,12 @@ class SqliteRepository(Generic[T]):
         con.close()
 
 
-v1 = Vocab
-v1.word = 'Яблоко'
-v1.translation = 'Apple'
-
-rep = SqliteRepository('LangLearnData.db', Vocab)
-print(rep.get_all())
+def vocab_factory():
+    with sqlite3.connect('LangLearnData.sqlite') as con:
+        cur = con.cursor()
+        cur.execute(
+            'CREATE TABLE IF NOT EXISTS Vocab ( pk INTEGER, word TEXT, translation TEXT,'
+            'PRIMARY KEY(pk))'
+        )
+    con.close()
+    return SqliteRepository('LangLearnData.sqlite', Vocab)
