@@ -20,12 +20,21 @@ def handle_query(call):
     if call.data == 'add':
         bot.send_message(call.message.chat.id, 'Введите слово и перервод через пробел')
         bot.register_next_step_handler(call.message, process_add)
+    elif call.data == 'clear':
+        process_clear(call.message)
 
 
 def process_add(message):
     data = (message.text.split(' '))
     add_word(data[0], data[1])
     bot.send_message(message.chat.id, 'Добавлено!')
+    start(message)
+
+
+def process_clear(message):
+    clear()
+    bot.send_message(message.chat.id, 'Все слова удалены!')
+    start(message)
 
 
 bot.polling()
