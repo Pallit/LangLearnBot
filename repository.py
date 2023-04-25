@@ -7,7 +7,12 @@ import sqlite3
 from typing import Generic, TypeVar, Protocol, Any, Optional
 from inspect import get_annotations
 
-T = TypeVar('T')
+
+class Model(Protocol):
+    pk: int
+
+
+T = TypeVar('T', bound=Model)
 
 
 class SqliteRepository(Generic[T]):
@@ -98,4 +103,4 @@ v1.word = 'Яблоко'
 v1.translation = 'Apple'
 
 rep = SqliteRepository('LangLearnData.db', Vocab)
-rep.add(v1)
+print(rep.get_all())
