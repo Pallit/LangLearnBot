@@ -1,10 +1,13 @@
 import telebot
+import enchant
 from telebot import types
 from Presenter import get_words, clear_words, add_word, get_literatures, add_literature, \
     clear_literatures
 
 bot = telebot.TeleBot('6063552257:AAEFuTPvYRiaHf_Z4-SEhchVkS_uQMkSU3w')
 
+dictEn = enchant.Dict('en_US')
+current_words = ['', '']
 
 @bot.message_handler(commands=['start'], content_types=['text'])
 def start(message):
@@ -54,12 +57,46 @@ def handle_query(call):
         process_get_all_literatures(call.message)
 
 
+def check_eng(message):
+    if not dictEn.check(current_words[1]):
+        suggest = dictEn.suggest(current_words[1])
+        if len(suggest) > 3:
+            suggest = suggest[0:3]
+        suggest.append('Отмена')
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        for s in suggest:
+            button = types.KeyboardButton(s)
+            markup.add(button)
+        bot.send_message(message.chat.id, 'Слово ' + current_words[1] +
+                         ' написано неправльно. Выберите слово из предложенных',
+                         reply_markup=markup)
+        bot.register_next_step_handler(message, process_choose_word_eng)
+        return True
+    return False
+
+
 def process_add_word(message):
     data = (message.text.split(' '))
     if len(data) != 2:
         bot.send_message(message.chat.id, 'Необходимо ввести 2 слова через пробел')
         return
-    add_word(data[0], data[1])
+    current_words[0] = data[0]
+    current_words[1] = data[1]
+
+    if check_eng(message):
+        return
+
+    add_word(current_words[0], current_words[1])
+    bot.send_message(message.chat.id, 'Добавлено!')
+
+
+def process_choose_word_eng(message):
+    if message.text == 'Отмена':
+        print('debug')
+        return
+    else:
+        current_words[1] = message.text
+    add_word(current_words[0], current_words[1])
     bot.send_message(message.chat.id, 'Добавлено!')
 
 
@@ -73,7 +110,7 @@ def process_get_all_words(message):
     text = ''
     if len(datas) > 0:
         for data in datas:
-            text += data.get_text()+'\n'
+            text += data.get_text() + '\n'
         bot.send_message(message.chat.id, text)
 
 
@@ -98,7 +135,7 @@ def process_get_all_literatures(message):
     if len(datas) > 0:
         for data in datas:
             info, link = data.get_text()
-            text += info+', [Ссылка]('+link+')'+'\n\n'
+            text += info + ', [Ссылка](' + link + ')' + '\n\n'
         bot.send_message(message.chat.id, text, parse_mode="MarkdownV2")
 
 
