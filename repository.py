@@ -118,4 +118,4 @@ def literature_factory():
             'link TEXT, PRIMARY KEY(pk))'
         )
     con.close()
-    return SqliteRepository('LangLearnData.sqlite', Vocab)
+    return SqliteRepository('LangLearnData.sqlite', Literature)
