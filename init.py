@@ -1,6 +1,7 @@
 import telebot
 from telebot import types
-from Presenter import get_words, clear_words, add_word, get_literatures, add_literature, clear_literatures
+from Presenter import get_words, clear_words, add_word, get_literatures, add_literature, \
+    clear_literatures
 
 bot = telebot.TeleBot('6063552257:AAEFuTPvYRiaHf_Z4-SEhchVkS_uQMkSU3w')
 
@@ -97,8 +98,8 @@ def process_get_all_literatures(message):
     if len(datas) > 0:
         for data in datas:
             info, link = data.get_text()
-            text += info+', '+link+'\n'
-        bot.send_message(message.chat.id, text)
+            text += info+', [Ссылка]('+link+')'+'\n\n'
+        bot.send_message(message.chat.id, text, parse_mode="MarkdownV2")
 
 
 bot.polling()
