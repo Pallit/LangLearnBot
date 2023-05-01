@@ -7,6 +7,12 @@ bot = telebot.TeleBot('6063552257:AAEFuTPvYRiaHf_Z4-SEhchVkS_uQMkSU3w')
 
 @bot.message_handler(commands=['start'], content_types=['text'])
 def start(message):
+    bot.send_message(message.chat.id,
+                     'Бот создан для помощи в изучении иностранных языков')
+
+
+@bot.message_handler(commands=['words'], content_types=['text'])
+def words(message):
     markup = types.InlineKeyboardMarkup()
     button1 = types.InlineKeyboardButton(text='Новое слово', callback_data='add')
     button2 = types.InlineKeyboardButton(text='Список', callback_data='get all')
@@ -19,14 +25,14 @@ def start(message):
 def handle_query(call):
     if call.data == 'add':
         bot.send_message(call.message.chat.id, 'Введите слово и перервод через пробел')
-        bot.register_next_step_handler(call.message, process_add)
+        bot.register_next_step_handler(call.message, process_add_word)
     elif call.data == 'clear':
-        process_clear(call.message)
+        process_clear_words(call.message)
     elif call.data == 'get all':
-        process_get_all(call.message)
+        process_get_all_words(call.message)
 
 
-def process_add(message):
+def process_add_word(message):
     data = (message.text.split(' '))
     if len(data) != 2:
         bot.send_message(message.chat.id, 'Необходимо ввести 2 слова через пробел')
@@ -35,12 +41,12 @@ def process_add(message):
     bot.send_message(message.chat.id, 'Добавлено!')
 
 
-def process_clear(message):
+def process_clear_words(message):
     clear_words()
     bot.send_message(message.chat.id, 'Все слова удалены!')
 
 
-def process_get_all(message):
+def process_get_all_words(message):
     datas = get_words()
     text = ''
     if len(datas) > 0:
