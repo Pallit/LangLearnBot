@@ -3,6 +3,7 @@
 """
 
 from Vocab import Vocab
+from Literature import Literature
 import sqlite3
 from typing import Generic, TypeVar, Protocol, Any, Optional
 from inspect import get_annotations
@@ -104,6 +105,17 @@ def vocab_factory():
         cur.execute(
             'CREATE TABLE IF NOT EXISTS Vocab ( pk INTEGER, word TEXT, translation TEXT,'
             'PRIMARY KEY(pk))'
+        )
+    con.close()
+    return SqliteRepository('LangLearnData.sqlite', Vocab)
+
+
+def literature_factory():
+    with sqlite3.connect('LangLearnData.sqlite') as con:
+        cur = con.cursor()
+        cur.execute(
+            'CREATE TABLE IF NOT EXISTS Literature ( pk INTEGER, name TEXT, autor TEXT, '
+            'link TEXT, PRIMARY KEY(pk))'
         )
     con.close()
     return SqliteRepository('LangLearnData.sqlite', Vocab)
