@@ -1,6 +1,6 @@
 import telebot
 from telebot import types
-from Presenter import get_words, clear, add_word
+from Presenter import get_words, clear_words, add_word
 
 bot = telebot.TeleBot('6063552257:AAEFuTPvYRiaHf_Z4-SEhchVkS_uQMkSU3w')
 
@@ -36,7 +36,7 @@ def process_add(message):
 
 
 def process_clear(message):
-    clear()
+    clear_words()
     bot.send_message(message.chat.id, 'Все слова удалены!')
 
 
