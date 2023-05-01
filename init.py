@@ -28,6 +28,9 @@ def handle_query(call):
 
 def process_add(message):
     data = (message.text.split(' '))
+    if len(data) != 2:
+        bot.send_message(message.chat.id, 'Необходимо ввести 2 слова через пробел')
+        return
     add_word(data[0], data[1])
     bot.send_message(message.chat.id, 'Добавлено!')
 
